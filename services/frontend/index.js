@@ -28,11 +28,16 @@ function newBook(book) {
                             <a class="button button-shipping is-info" data-id="${book.id}"> Calcular Frete </a>
                         </div>
                     </div>
-                    <button class="button button-buy is-success is-fullwidth">Comprar</button>
+                    <button id="${book.id}" class="button button-buy is-success is-fullwidth">Comprar</button>
                 </div>
             </div>
         </div>`;
-    return div;
+        if (book.quantity == 0) {
+            $(document).ready(() => {
+                $(`#${book.id}`).prop('disabled', true);
+            });
+        }
+        return div;
 }
 
 function calculateShipping(id, cep) {
@@ -78,6 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 document.querySelectorAll('.button-buy').forEach((btn) => {
                     btn.addEventListener('click', (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        fetch(`http://localhost:3000/product/buy/${id}/1`, {
+                            method: 'POST'
+                        })
                         swal('Compra de livro', 'Sua compra foi realizada com sucesso', 'success');
                     });
                 });
